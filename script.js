@@ -1,6 +1,6 @@
 (function() {
   // ===========================================================
-  // Bagian 1: Array Label Obfuscated dengan Notasi Hex dan Shifting
+  // Bagian 1: Array Label Obfuscated dengan Notasi Hex dan Shifting (Internal)
   // ===========================================================
   const _0xlabels = [
     "\x42\x61\x73\x65\x36\x34",              // "Base64"
@@ -20,7 +20,7 @@
     "\x44\x4e\x41"                           // "DNA"
   ];
   
-  // Fungsi shifting untuk mengacak urutan array label
+  // Fungsi shifting untuk mengacak urutan array label (internal saja)
   (function(_0xarr, _0xshift) {
     const _0xinner = function(_0xnum) {
       while (--_0xnum) {
@@ -30,7 +30,7 @@
     _0xinner(++_0xshift);
   }(_0xlabels, 0x3));  // Misalnya, geser sebanyak 4 kali
   
-  // Fungsi untuk mengambil label berdasarkan indeks (dengan offset)
+  // Fungsi untuk mengambil label (jika diperlukan secara internal)
   function _0xgetLabel(_0xindex) {
     _0xindex = _0xindex - 0x0;
     return _0xlabels[_0xindex];
@@ -211,7 +211,7 @@
   }
 
   // 15. DNA Encoding  
-  // (Setiap 2-bit dikonversi ke nukleotida: "00"→A, "01"→C, "10"→G, "11"→T)
+  // (Setiap 2-bit dikonversi ke nukleotida: "00" → A, "01" → C, "10" → G, "11" → T)
   function encodeDNA(str) {
       let mapping = {"00": "A", "01": "C", "10": "G", "11": "T"};
       let result = "";
@@ -226,46 +226,34 @@
   }
 
   // ===========================================================
-  // Bagian 3: Fungsi Pembantu & Proses Penggabungan Hasil
+  // Bagian 3: Proses Penggabungan Hasil (Satu Kode Gabungan)
   // ===========================================================
   
-  // Fungsi pembantu: Acak array (algoritma Fisher‑Yates)
-  function shuffleArray(array) {
-      for (let i = array.length - 1; i > 0; i--) {
-          let j = Math.floor(Math.random() * (i + 1));
-          [array[i], array[j]] = [array[j], array[i]];
-      }
-      return array;
-  }
-
   // Fungsi untuk memproses semua encoding dan menyimpan hasilnya dalam array
   function processEncodings(input) {
-      let encodings = [];
-      try { encodings.push({ encoding: _0xgetLabel(0), result: encodeBase64(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(0), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(1), result: encodeCharCodes(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(1), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(2), result: encodeURL(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(2), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(3), result: encodeMorse(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(3), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(4), result: encodeBinary(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(4), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(5), result: encodeRot13(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(5), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(6), result: encodeHex(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(6), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(7), result: encodeAtbash(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(7), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(8), result: encodeBase85(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(8), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(9), result: encodeBase91(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(9), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(10), result: encodeJSObfuscate(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(10), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(11), result: encodePunycode(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(11), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(12), result: encodeBrainfuck(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(12), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(13), result: encodeBase4096(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(13), result: "Error: " + e.message }); }
-      try { encodings.push({ encoding: _0xgetLabel(14), result: encodeDNA(input) }); } catch(e) { encodings.push({ encoding: _0xgetLabel(14), result: "Error: " + e.message }); }
+      let results = [];
+      try { results.push(encodeBase64(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeCharCodes(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeURL(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeMorse(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeBinary(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeRot13(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeHex(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeAtbash(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeBase85(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeBase91(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeJSObfuscate(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodePunycode(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeBrainfuck(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeBase4096(input)); } catch(e) { results.push("Error: " + e.message); }
+      try { results.push(encodeDNA(input)); } catch(e) { results.push("Error: " + e.message); }
       
-      // Acak urutan hasil encoding sebelum dikembalikan
-      return shuffleArray(encodings);
+      return results;
   }
 
-  // Fungsi untuk menggabungkan hasil encoding menjadi satu string
-  function combineEncodings(encodings) {
-      return encodings
-        .map(e => "[" + e.encoding + "]\n" + e.result)
-        .join("\n---\n");
+  // Fungsi untuk menggabungkan semua hasil encoding menjadi satu string (tanpa label)
+  function combineEncodings(results) {
+      return results.join(""); // Gabungkan tanpa delimiter atau label
   }
 
   // ===========================================================
