@@ -319,17 +319,20 @@
   // ===========================================================
   // Bagian 5: Event Listener dan Fungsi Clipboard
   // ===========================================================
-  document.getElementById("encodeButton").addEventListener("click", function(){
-    try{
-      var inp = document.getElementById("inputText").value;
-      var res = processEncodings(inp);
-      var out = advancedCombineEncodings(res);
-      document.getElementById("outputText").textContent = out;
-    } catch(e){
-      document.getElementById("outputText").textContent = "Err processing: " + e.message;
-      console.error(e);
-    }
-  });
+ document.addEventListener("DOMContentLoaded", function() {
+    document.getElementById("encodeButton").addEventListener("click", function() {
+        try {
+            var inp = document.getElementById("inputText").value;
+            var res = processEncodings(inp);
+            var out = advancedCombineEncodings(res);
+            document.getElementById("outputText").textContent = out;
+        } catch(e) {
+            document.getElementById("outputText").textContent = "Err processing: " + e.message;
+            console.error(e);
+        }
+    });
+});
+
   
   document.getElementById("pasteButton").addEventListener("click", async function(){
     try{
