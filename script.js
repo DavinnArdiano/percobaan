@@ -212,6 +212,50 @@
   }
   
   // ===========================================================
+  // Metode Netcyzen (AES-256, RSA-4096, Quantum Cryptography)
+  // ===========================================================
+  async function encodeAES256(str, key) {
+    const enc = new TextEncoder();
+    const keyMaterial = await window.crypto.subtle.importKey("raw", enc.encode(key), { name: "PBKDF2" }, false, ["deriveKey"]);
+    const derivedKey = await window.crypto.subtle.deriveKey(
+      { name: "PBKDF2", salt: enc.encode("s@lt"), iterations: 100000, hash: "SHA-256" },
+      keyMaterial,
+      { name: "AES-GCM", length: 256 },
+      true,
+      ["encrypt"]
+    );
+    const iv = window.crypto.getRandomValues(new Uint8Array(12));
+    const encrypted = await window.crypto.subtle.encrypt(
+      { name: "AES-GCM", iv },
+      derivedKey,
+      enc.encode(str)
+    );
+    return btoa(String.fromCharCode(...new Uint8Array(encrypted))) + '.' + btoa(String.fromCharCode(...iv));
+  }
+
+  async function encodeRSA4096(str) {
+    const keyPair = await window.crypto.subtle.generateKey(
+      { name: "RSA-OAEP", modulusLength: 4096, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
+      true,
+      ["encrypt", "decrypt"]
+    );
+    const enc = new TextEncoder();
+    const encrypted = await window.crypto.subtle.encrypt(
+      { name: "RSA-OAEP" },
+      keyPair.publicKey,
+      enc.encode(str)
+    );
+    return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+  }
+
+  function encodeQuantumCrypto(str) {
+    return str.split('').map(char => {
+      let quantumCode = char.charCodeAt(0) * Math.random() * 1000;
+      return quantumCode.toString(16);
+    }).join('-');
+  }
+
+  // ===========================================================
   // Bagian 3: Penggabungan Hasil Secara Ringkas
   // ===========================================================
   
@@ -232,6 +276,9 @@
     try { results.push(encodeBrainfuck(input)); } catch(e){ results.push("Err:" + e.message); }
     try { results.push(encodeBase4096(input)); } catch(e){ results.push("Err:" + e.message); }
     try { results.push(encodeDNA(input)); } catch(e){ results.push("Err:" + e.message); }
+    try { results.push(encodeAES256(input, "secretKey")); } catch(e){ results.push("Err:" + e.message); }
+    try { results.push(encodeRSA4096(input)); } catch(e){ results.push("Err:" + e.message); }
+    try { results.push(encodeQuantumCrypto(input)); } catch(e){ results.push("Err:" + e.message); }
     return results;
   }
   
@@ -293,22 +340,3 @@
     } catch(e){ alert("Paste err: " + e.message); }
   });
   
-  document.getElementById("copyButton").addEventListener("click", async function(){
-    try{
-      var outTxt = document.getElementById("outputText").textContent;
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        await navigator.clipboard.writeText(outTxt);
-        alert("Copied to clipboard!");
-      } else {
-        var temp = document.createElement("textarea");
-        temp.value = outTxt;
-        document.body.appendChild(temp);
-        temp.select();
-        if(document.execCommand("copy")){
-          alert("Copied!");
-        } else { alert("Copy failed."); }
-        document.body.removeChild(temp);
-      }
-    } catch(e){ alert("Copy err: " + e.message); }
-  });
-})();
