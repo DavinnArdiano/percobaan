@@ -340,3 +340,12 @@
     } catch(e){ alert("Paste err: " + e.message); }
   });
   
+(function(){
+  document.getElementById("copyButton").addEventListener("click", async function(){
+    try{
+      var txt = document.getElementById("outputText").textContent;
+      await navigator.clipboard.writeText(txt);
+      alert("Copied to clipboard!");
+    } catch(e){ alert("Copy err: " + e.message); }
+  });
+})();
