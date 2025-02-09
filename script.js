@@ -1,6 +1,6 @@
 (function() {
   // ===========================================================
-  // Bagian 1: Array Label Obfuscated (Internal saja)
+  // Bagian 1: Array Label Obfuscated (Internal, tidak ditampilkan)
   // ===========================================================
   const _0xlabels = [
     "\x42\x61\x73\x65\x36\x34",              // "Base64"
@@ -20,7 +20,7 @@
     "\x44\x4e\x41"                           // "DNA"
   ];
   
-  // Fungsi shifting untuk mengacak urutan array label (hanya internal)
+  // Lakukan shifting internal pada array label (untuk menambah kerumitan, tidak dipakai di output)
   (function(_0xarr, _0xshift) {
     const _0xinner = function(_0xnum) {
       while (--_0xnum) {
@@ -28,9 +28,8 @@
       }
     };
     _0xinner(++_0xshift);
-  }(_0xlabels, 0x3));  // Contoh: geser sebanyak 4 kali
+  }(_0xlabels, 0x3));
   
-  // Fungsi _0xgetLabel() tersedia jika diperlukan internal (tidak dipakai di output)
   function _0xgetLabel(_0xindex) {
     _0xindex = _0xindex - 0x0;
     return _0xlabels[_0xindex];
@@ -40,22 +39,18 @@
   // Bagian 2: Fungsi-Fungsi Multi Encoding
   // ===========================================================
   
-  // 1. Base64 Encoding
   function encodeBase64(str) {
       return btoa(str);
   }
 
-  // 2. Character Encoding (CharCodes)
   function encodeCharCodes(str) {
       return str.split('').map(ch => ch.charCodeAt(0)).join(' ');
   }
 
-  // 3. URL Encoding
   function encodeURL(str) {
       return encodeURIComponent(str);
   }
 
-  // 4. Morse Code Encoding
   const morseMap = {
     'A': ".-", 'B': "-...", 'C': "-.-.", 'D': "-..",
     'E': ".", 'F': "..-.", 'G': "--.", 'H': "....",
@@ -75,30 +70,20 @@
       }).join(' ');
   }
 
-  // 5. Binary Encoding
   function encodeBinary(str) {
-      return str.split('').map(ch => {
-          return ch.charCodeAt(0).toString(2).padStart(8, '0');
-      }).join(' ');
+      return str.split('').map(ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
   }
 
-  // 6. Rot13 Encoding
   function encodeRot13(str) {
       return str.replace(/[a-zA-Z]/g, function(c) {
-         return String.fromCharCode(
-             (c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26
-         );
+         return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
       });
   }
 
-  // 7. Hex Encoding
   function encodeHex(str) {
-      return str.split('').map(ch => {
-          return ch.charCodeAt(0).toString(16).padStart(2, '0');
-      }).join(' ');
+      return str.split('').map(ch => ch.charCodeAt(0).toString(16).padStart(2, '0')).join(' ');
   }
 
-  // 8. Atbash Cipher Encoding
   function encodeAtbash(str) {
       const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       const reversed = alphabet.split('').reverse().join('');
@@ -113,16 +98,13 @@
       }).join('');
   }
 
-  // 9. Base85 Encoding (Ascii85)
   function encodeBase85(str) {
       let bytes = [];
       for (let i = 0; i < str.length; i++) {
           bytes.push(str.charCodeAt(i));
       }
       let padding = (4 - (bytes.length % 4)) % 4;
-      for (let i = 0; i < padding; i++) {
-          bytes.push(0);
-      }
+      for (let i = 0; i < padding; i++) { bytes.push(0); }
       let result = "";
       for (let i = 0; i < bytes.length; i += 4) {
           let num = ((bytes[i] << 24) >>> 0) | (bytes[i+1] << 16) | (bytes[i+2] << 8) | (bytes[i+3]);
@@ -142,7 +124,6 @@
       return result;
   }
 
-  // 10. Base91 Encoding
   function encodeBase91(str) {
       let b = 0, n = 0, out = "";
       const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~\"";
@@ -151,14 +132,8 @@
           n += 8;
           if (n > 13) {
               let v = b & 8191;
-              if (v > 88) {
-                  b >>= 13;
-                  n -= 13;
-              } else {
-                  v = b & 16383;
-                  b >>= 14;
-                  n -= 14;
-              }
+              if (v > 88) { b >>= 13; n -= 13; }
+              else { v = b & 16383; b >>= 14; n -= 14; }
               out += alphabet[v % 91] + alphabet[Math.floor(v / 91)];
           }
       }
@@ -171,18 +146,14 @@
       return out;
   }
 
-  // 11. JS Obfuscation (balik string lalu Base64)
   function encodeJSObfuscate(str) {
       return btoa(str.split("").reverse().join(""));
   }
 
-  // 12. Punycode (dummy: awali dengan "xn--" + Hex Encoding)
   function encodePunycode(str) {
       return "xn--" + encodeHex(str);
   }
 
-  // 13. Brainfuck Encoding  
-  // Untuk tiap karakter: tambahkan '+' sebanyak nilai ASCII, lalu '.'
   function encodeBrainfuck(str) {
       let bf = "";
       for (let i = 0; i < str.length; i++) {
@@ -192,8 +163,6 @@
       return bf;
   }
 
-  // 14. Base4096 Encoding  
-  // Kelompokkan bit tiap karakter ke dalam blok 12-bit, lalu petakan ke Unicode
   function encodeBase4096(str) {
       let bits = "";
       for (let i = 0; i < str.length; i++) {
@@ -210,8 +179,6 @@
       return result;
   }
 
-  // 15. DNA Encoding  
-  // Setiap 2-bit dikonversi ke nukleotida: "00"→A, "01"→C, "10"→G, "11"→T
   function encodeDNA(str) {
       let mapping = {"00": "A", "01": "C", "10": "G", "11": "T"};
       let result = "";
@@ -224,12 +191,11 @@
       }
       return result;
   }
-
+  
   // ===========================================================
-  // Bagian 3: Proses Penggabungan Hasil (Menyatukan Output Secara Ringkas)
+  // Bagian 3: Penggabungan Hasil Secara Ringkas
   // ===========================================================
   
-  // Fungsi untuk memproses semua encoding dan mengembalikan array hasil
   function processEncodings(input) {
       let results = [];
       try { results.push(encodeBase64(input)); } catch(e) { results.push("Error: " + e.message); }
@@ -247,27 +213,54 @@
       try { results.push(encodeBrainfuck(input)); } catch(e) { results.push("Error: " + e.message); }
       try { results.push(encodeBase4096(input)); } catch(e) { results.push("Error: " + e.message); }
       try { results.push(encodeDNA(input)); } catch(e) { results.push("Error: " + e.message); }
-      
       return results;
   }
 
-  // Fungsi untuk menggabungkan hasil-hasil encoding secara ringkas.
-  // Di sini, kita ambil hanya (misalnya) 4 karakter dari tiap hasil.
+  // Fungsi combineEncodings(): ambil (misalnya) 4 karakter dari tiap hasil
   function combineEncodings(results) {
-      const takeChars = 4; // jumlah karakter yang akan diambil dari tiap metode
-      return results
-        .map(r => r.substr(0, takeChars))
-        .join("");
+      const takeChars = 4;
+      return results.map(r => r.substr(0, takeChars)).join("");
   }
-
+  
   // ===========================================================
-  // Bagian 4: Event Listener untuk Tombol Encode
+  // Bagian 4: Advanced Combine dengan Teknik String Array yang Lebih Sulit
+  // ===========================================================
+  function advancedCombineEncodings(results) {
+      // Gabungan dasar
+      let basicCombined = combineEncodings(results);
+      // Pecah ke array karakter
+      let charArray = basicCombined.split("");
+      // Acak array karakter menggunakan Fisher–Yates
+      for (let i = charArray.length - 1; i > 0; i--) {
+          let j = Math.floor(Math.random() * (i + 1));
+          [charArray[i], charArray[j]] = [charArray[j], charArray[i]];
+      }
+      // Ubah tiap karakter ke notasi hex, balik string hex-nya, dan tambahkan huruf acak
+      let obfuscatedArray = charArray.map(function(ch) {
+          let hex = ch.charCodeAt(0).toString(16);
+          let reversedHex = hex.split("").reverse().join("");
+          let randomChar = ["x", "y", "z"][Math.floor(Math.random() * 3)];
+          return reversedHex + randomChar;
+      });
+      // Buat delimiter kompleks dari array notasi hex
+      let delimiters = ["\x7C", "\x2A", "\x23"]; // |, *, #
+      for (let i = delimiters.length - 1; i > 0; i--) {
+          let j = Math.floor(Math.random() * (i + 1));
+          [delimiters[i], delimiters[j]] = [delimiters[j], delimiters[i]];
+      }
+      let delimiter = delimiters.join("");
+      // Gabungkan array obfuscated dengan delimiter kompleks
+      return obfuscatedArray.join(delimiter);
+  }
+  
+  // ===========================================================
+  // Bagian 5: Event Listener (Output akan berupa string teks yang valid)
   // ===========================================================
   document.getElementById("encodeButton").addEventListener("click", function() {
       try {
           let inputText = document.getElementById("inputText").value;
           let results = processEncodings(inputText);
-          let finalOutput = combineEncodings(results);
+          let finalOutput = advancedCombineEncodings(results);
           document.getElementById("outputText").textContent = finalOutput;
       } catch (e) {
           document.getElementById("outputText").textContent = "Error processing encoding: " + e.message;
