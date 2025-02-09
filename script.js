@@ -340,23 +340,3 @@ document.addEventListener("DOMContentLoaded", function() {
         }
     });
 });
-
-  
-  document.getElementById("pasteButton").addEventListener("click", async function(){
-    try{
-      if(navigator.clipboard && navigator.clipboard.readText){
-        var txt = await navigator.clipboard.readText();
-        document.getElementById("inputText").value = txt;
-      } else { alert("Clipboard API not supported."); }
-    } catch(e){ alert("Paste err: " + e.message); }
-  });
-  
-(function(){
-  document.getElementById("copyButton").addEventListener("click", async function(){
-    try{
-      var txt = document.getElementById("outputText").textContent;
-      await navigator.clipboard.writeText(txt);
-      alert("Copied to clipboard!");
-    } catch(e){ alert("Copy err: " + e.message); }
-  });
-})();
