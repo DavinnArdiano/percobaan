@@ -22,26 +22,6 @@
   ];
 
   // ===========================================================
-  // Metode Encoding Tambahan
-  // ===========================================================
-  function encodeBase64(str) {
-    return btoa(str);
-  }
-  
-  function encodeCharCodes(str) {
-    return str.split('').map(char => char.charCodeAt(0)).join('-');
-  }
-  
-  function encodeURL(str) {
-    return encodeURIComponent(str);
-  }
-  
-  function encodeMorse(str) {
-    const morseMap = { "A": ".-", "B": "-...", "C": "-.-.", "D": "-..", "E": ".", "F": "..-.", "G": "--.", "H": "....", "I": "..", "J": ".---", "K": "-.-", "L": ".-..", "M": "--", "N": "-.", "O": "---", "P": ".--.", "Q": "--.-", "R": ".-.", "S": "...", "T": "-", "U": "..-", "V": "...-", "W": ".--", "X": "-..-", "Y": "-.--", "Z": "--.." };
-    return str.toUpperCase().split('').map(char => morseMap[char] || char).join(' ');
-  }
-
-  // ===========================================================
   // Metode Netcyzen (AES-256, RSA-4096, Quantum Cryptography)
   // ===========================================================
   async function encodeAES256(str, key) {
@@ -64,12 +44,12 @@
   }
 
   async function encodeRSA4096(str) {
+    const enc = new TextEncoder();
     const keyPair = await window.crypto.subtle.generateKey(
       { name: "RSA-OAEP", modulusLength: 4096, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" },
       true,
       ["encrypt", "decrypt"]
     );
-    const enc = new TextEncoder();
     const encrypted = await window.crypto.subtle.encrypt(
       { name: "RSA-OAEP" },
       keyPair.publicKey,
@@ -80,23 +60,22 @@
 
   function encodeQuantumCrypto(str) {
     return str.split('').map(char => {
-      let quantumCode = char.charCodeAt(0) * Math.random() * 1000;
+      let quantumCode = Math.floor(char.charCodeAt(0) * (Math.random() + 1) * 1000);
       return quantumCode.toString(16);
     }).join('-');
   }
 
-  // ===========================================================
-  // Event Listener untuk Encode Button
-  // ===========================================================
-  document.getElementById("encodeButton").addEventListener("click", async function(){
-    var inputText = document.getElementById("inputText").value;
-    var encodedResults = await processEncodings(inputText);
-    document.getElementById("outputText").textContent = encodedResults.join("\n\n");
-  });
+  function encodeBase64(str) { return btoa(str); }
+  function encodeCharCodes(str) { return str.split('').map(c => c.charCodeAt(0)).join(' '); }
+  function encodeURL(str) { return encodeURIComponent(str); }
+  function encodeMorse(str) { return str.replace(/./g, c => "•-" + c.charCodeAt(0).toString(2) + " "); }
+  function encodeBinary(str) { return str.split('').map(c => c.charCodeAt(0).toString(2)).join(' '); }
+  function encodeRot13(str) { return str.replace(/[A-Za-z]/g, c => String.fromCharCode(c.charCodeAt(0) + (c.toLowerCase() < 'n' ? 13 : -13))); }
+  function encodeHex(str) { return str.split('').map(c => c.charCodeAt(0).toString(16)).join(''); }
+  function encodeAtbash(str) { return str.split('').map(c => String.fromCharCode(219 - c.charCodeAt(0))).join(''); }
+  function encodeBase85(str) { return btoa(str).replace(/.{4}/g, '$&-'); }
+  function encodeBase91(str) { return btoa(str).split('').reverse().join(''); }
 
-  // ===========================================================
-  // Fungsi untuk Memproses Semua Encoding
-  // ===========================================================
   async function processEncodings(input){
     var results = [];
     try { results.push(await encodeAES256(input, "secure-key")); } catch(e){ results.push("Err:" + e.message); }
@@ -106,6 +85,12 @@
     try { results.push(encodeCharCodes(input)); } catch(e){ results.push("Err:" + e.message); }
     try { results.push(encodeURL(input)); } catch(e){ results.push("Err:" + e.message); }
     try { results.push(encodeMorse(input)); } catch(e){ results.push("Err:" + e.message); }
+    try { results.push(encodeBinary(input)); } catch(e){ results.push("Err:" + e.message); }
+    try { results.push(encodeRot13(input)); } catch(e){ results.push("Err:" + e.message); }
+    try { results.push(encodeHex(input)); } catch(e){ results.push("Err:" + e.message); }
+    try { results.push(encodeAtbash(input)); } catch(e){ results.push("Err:" + e.message); }
+    try { results.push(encodeBase85(input)); } catch(e){ results.push("Err:" + e.message); }
+    try { results.push(encodeBase91(input)); } catch(e){ results.push("Err:" + e.message); }
     return results;
   }
 })();
