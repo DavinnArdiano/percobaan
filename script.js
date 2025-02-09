@@ -20,7 +20,7 @@
     "\x44\x4e\x41"                           // "DNA"
   ];
   
-  // Lakukan shifting internal pada array label (untuk menambah kerumitan, tidak dipakai di output)
+  // Lakukan shifting internal pada array label (menambah kerumitan, tidak ditampilkan)
   (function(_0xarr, _0xshift) {
     const _0xinner = function(_0xnum) {
       while (--_0xnum) {
@@ -42,15 +42,15 @@
   function encodeBase64(str) {
       return btoa(str);
   }
-
+  
   function encodeCharCodes(str) {
       return str.split('').map(ch => ch.charCodeAt(0)).join(' ');
   }
-
+  
   function encodeURL(str) {
       return encodeURIComponent(str);
   }
-
+  
   const morseMap = {
     'A': ".-", 'B': "-...", 'C': "-.-.", 'D': "-..",
     'E': ".", 'F': "..-.", 'G': "--.", 'H': "....",
@@ -63,27 +63,30 @@
     '4': "....-", '5': ".....", '6': "-....", '7': "--...",
     '8': "---..", '9': "----."
   };
+  
   function encodeMorse(str) {
       return str.toUpperCase().split('').map(ch => {
           if (ch === ' ') return '/';
           return morseMap[ch] || ch;
       }).join(' ');
   }
-
+  
   function encodeBinary(str) {
       return str.split('').map(ch => ch.charCodeAt(0).toString(2).padStart(8, '0')).join(' ');
   }
-
+  
   function encodeRot13(str) {
       return str.replace(/[a-zA-Z]/g, function(c) {
-         return String.fromCharCode((c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26);
+         return String.fromCharCode(
+             (c <= "Z" ? 90 : 122) >= (c = c.charCodeAt(0) + 13) ? c : c - 26
+         );
       });
   }
-
+  
   function encodeHex(str) {
       return str.split('').map(ch => ch.charCodeAt(0).toString(16).padStart(2, '0')).join(' ');
   }
-
+  
   function encodeAtbash(str) {
       const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       const reversed = alphabet.split('').reverse().join('');
@@ -97,7 +100,7 @@
           return ch;
       }).join('');
   }
-
+  
   function encodeBase85(str) {
       let bytes = [];
       for (let i = 0; i < str.length; i++) {
@@ -108,9 +111,8 @@
       let result = "";
       for (let i = 0; i < bytes.length; i += 4) {
           let num = ((bytes[i] << 24) >>> 0) | (bytes[i+1] << 16) | (bytes[i+2] << 8) | (bytes[i+3]);
-          if (num === 0) {
-              result += 'z';
-          } else {
+          if (num === 0) { result += 'z'; }
+          else {
               let block = "";
               let divisor = Math.pow(85, 4);
               for (let j = 0; j < 5; j++) {
@@ -123,7 +125,7 @@
       }
       return result;
   }
-
+  
   function encodeBase91(str) {
       let b = 0, n = 0, out = "";
       const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~\"";
@@ -139,21 +141,19 @@
       }
       if (n) {
           out += alphabet[b % 91];
-          if (n > 7 || b > 90) {
-              out += alphabet[Math.floor(b / 91)];
-          }
+          if (n > 7 || b > 90) { out += alphabet[Math.floor(b / 91)]; }
       }
       return out;
   }
-
+  
   function encodeJSObfuscate(str) {
       return btoa(str.split("").reverse().join(""));
   }
-
+  
   function encodePunycode(str) {
       return "xn--" + encodeHex(str);
   }
-
+  
   function encodeBrainfuck(str) {
       let bf = "";
       for (let i = 0; i < str.length; i++) {
@@ -162,7 +162,7 @@
       }
       return bf;
   }
-
+  
   function encodeBase4096(str) {
       let bits = "";
       for (let i = 0; i < str.length; i++) {
@@ -178,7 +178,7 @@
       }
       return result;
   }
-
+  
   function encodeDNA(str) {
       let mapping = {"00": "A", "01": "C", "10": "G", "11": "T"};
       let result = "";
@@ -215,7 +215,7 @@
       try { results.push(encodeDNA(input)); } catch(e) { results.push("Error: " + e.message); }
       return results;
   }
-
+  
   // Fungsi combineEncodings(): ambil (misalnya) 4 karakter dari tiap hasil
   function combineEncodings(results) {
       const takeChars = 4;
@@ -223,39 +223,36 @@
   }
   
   // ===========================================================
-  // Bagian 4: Advanced Combine dengan Teknik String Array yang Lebih Sulit
+  // Bagian 4: Advanced Combine dengan Teknik String Array yang Sulit
   // ===========================================================
   function advancedCombineEncodings(results) {
-      // Gabungan dasar
       let basicCombined = combineEncodings(results);
-      // Pecah ke array karakter
       let charArray = basicCombined.split("");
-      // Acak array karakter menggunakan Fisher–Yates
+      // Acak array karakter dengan algoritma Fisher–Yates
       for (let i = charArray.length - 1; i > 0; i--) {
           let j = Math.floor(Math.random() * (i + 1));
           [charArray[i], charArray[j]] = [charArray[j], charArray[i]];
       }
-      // Ubah tiap karakter ke notasi hex, balik string hex-nya, dan tambahkan huruf acak
       let obfuscatedArray = charArray.map(function(ch) {
           let hex = ch.charCodeAt(0).toString(16);
           let reversedHex = hex.split("").reverse().join("");
           let randomChar = ["x", "y", "z"][Math.floor(Math.random() * 3)];
           return reversedHex + randomChar;
       });
-      // Buat delimiter kompleks dari array notasi hex
       let delimiters = ["\x7C", "\x2A", "\x23"]; // |, *, #
       for (let i = delimiters.length - 1; i > 0; i--) {
           let j = Math.floor(Math.random() * (i + 1));
           [delimiters[i], delimiters[j]] = [delimiters[j], delimiters[i]];
       }
       let delimiter = delimiters.join("");
-      // Gabungkan array obfuscated dengan delimiter kompleks
       return obfuscatedArray.join(delimiter);
   }
   
   // ===========================================================
-  // Bagian 5: Event Listener (Output akan berupa string teks yang valid)
+  // Bagian 5: Event Listener dan Fungsi Clipboard
   // ===========================================================
+  
+  // Tombol Encode: proses input dan tampilkan output advanced combine
   document.getElementById("encodeButton").addEventListener("click", function() {
       try {
           let inputText = document.getElementById("inputText").value;
@@ -265,6 +262,45 @@
       } catch (e) {
           document.getElementById("outputText").textContent = "Error processing encoding: " + e.message;
           console.error(e);
+      }
+  });
+  
+  // Tombol Paste: ambil teks dari clipboard dan tempel ke textarea input
+  document.getElementById("pasteButton").addEventListener("click", async function() {
+      try {
+          if (navigator.clipboard && navigator.clipboard.readText) {
+              let text = await navigator.clipboard.readText();
+              document.getElementById("inputText").value = text;
+          } else {
+              alert("Clipboard API tidak didukung di browser ini.");
+          }
+      } catch (e) {
+          alert("Gagal menempel teks: " + e.message);
+      }
+  });
+  
+  // Tombol Copy: salin teks output ke clipboard
+  document.getElementById("copyButton").addEventListener("click", async function() {
+      try {
+          let outputText = document.getElementById("outputText").textContent;
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+              await navigator.clipboard.writeText(outputText);
+              alert("Output telah disalin ke clipboard!");
+          } else {
+              // Fallback: gunakan metode execCommand jika Clipboard API tidak tersedia
+              let tempInput = document.createElement("textarea");
+              tempInput.value = outputText;
+              document.body.appendChild(tempInput);
+              tempInput.select();
+              if (document.execCommand("copy")) {
+                  alert("Output telah disalin ke clipboard!");
+              } else {
+                  alert("Gagal menyalin teks.");
+              }
+              document.body.removeChild(tempInput);
+          }
+      } catch (e) {
+          alert("Gagal menyalin teks: " + e.message);
       }
   });
 })();
