@@ -1,314 +1,104 @@
-(function(){
-  // ===========================================================
-  // Bagian 1: Array Label Obfuscated (Internal, tidak ditampilkan)
-  // ===========================================================
-  var _0x3df1 = [
-    "\x42\x61\x73\x65\x36\x34",              // "Base64"
-    "\x43\x68\x61\x72\x43\x6f\x64\x65\x73",    // "CharCodes"
-    "\x55\x52\x4c",                          // "URL"
-    "\x4d\x6f\x72\x73\x65",                    // "Morse"
-    "\x42\x69\x6e\x61\x72\x79",                // "Binary"
-    "\x52\x6f\x74\x31\x33",                   // "Rot13"
-    "\x48\x65\x78",                          // "Hex"
-    "\x41\x74\x62\x61\x73\x68",                // "Atbash"
-    "\x42\x61\x73\x65\x38\x35",                // "Base85"
-    "\x42\x61\x73\x65\x39\x31",                // "Base91"
-    "\x4a\x53\x4f\x62\x66\x75\x73\x63\x61\x74\x65", // "JSObfuscate"
-    "\x50\x75\x6e\x79\x63\x6f\x64\x65",        // "Punycode"
-    "\x42\x72\x61\x69\x6e\x66\x75\x63\x6b",    // "Brainfuck"
-    "\x42\x61\x73\x65\x34\x30\x39\x36",        // "Base4096"
-    "\x44\x4e\x41"                           // "DNA"
-  ];
-  (function(_0xarr, _0xshift){
-    var _0xinner = function(_0xnum){
-      while(--_0xnum){ _0xarr.push(_0xarr.shift()); }
-    };
-    _0xinner(++_0xshift);
-  }(_0x3df1,0x3));
-  function _0x37b7(_0xindex){
-    _0xindex = _0xindex - 0x0;
-    return _0x3df1[_0xindex];
-  }
-  
-  // ===========================================================
-  // Bagian 2: Fungsi-Fungsi Multi Encoding dengan Teknik Array
-  // ===========================================================
-  
-  function encodeBase64(str){
-    var _0xkey = ["b","t","o","a"].join("");
-    return window[_0xkey](str);
-  }
-  
-  function encodeCharCodes(str){
-    var _0xsplit = ["s","p","l","i","t"].join("");
-    var _0xmap   = ["m","a","p"].join("");
-    var _0xjoin  = ["j","o","i","n"].join("");
-    return str[_0xsplit]("")[_0xmap](function(ch){
-      return ch.charCodeAt(0);
-    })[_0xjoin](" ");
-  }
-  
-  function encodeURL(str){
-    var _0xfn = ["e","n","c","o","d","e","U","R","I","C","O","M","P","O","N","E","N","T"].join("");
-    return window[_0xfn](str);
-  }
-  
-  var morseMap = {
-    'A':".-",'B':"-...",'C':"-.-.",'D':"-..",
-    'E':".",'F':"..-.",'G':"--.",'H':"....",
-    'I':"..",'J':".---",'K':"-.-",'L':".-..",
-    'M':"--",'N':"-.",'O':"---",'P':".--.",
-    'Q':"--.-",'R':".-.",'S':"...",'T':"-",
-    'U':"..-",'V':"...-",'W':".--",'X':"-..-",
-    'Y':"-.--",'Z':"--..",
-    '0':"-----",'1':".----",'2':"..---",'3':"...--",
-    '4':"....-",'5':".....",'6':"-....",'7':"--...",
-    '8':"---..",'9':"----."
-  };
-  function encodeMorse(str){
-    var _0xsplit = ["s","p","l","i","t"].join("");
-    var _0xmap   = ["m","a","p"].join("");
-    var _0xjoin  = ["j","o","i","n"].join("");
-    return str.toUpperCase()[_0xsplit]("")[_0xmap](function(ch){
-      return (ch===" ") ? "/" : (morseMap[ch] || ch);
-    })[_0xjoin](" ");
-  }
-  
-  function encodeBinary(str){
-    var _0xsplit = ["s","p","l","i","t"].join("");
-    var _0xmap   = ["m","a","p"].join("");
-    var _0xjoin  = ["j","o","i","n"].join("");
-    return str[_0xsplit]("")[_0xmap](function(ch){
-      return ch.charCodeAt(0).toString(2).padStart(8,"0");
-    })[_0xjoin](" ");
-  }
-  
-  function encodeRot13(str){
-    return str.replace(/[a-zA-Z]/g,function(c){
-      var _0xcode = c.charCodeAt(0)+13;
-      return String.fromCharCode((c<="Z" ? 90 : 122)>=_0xcode ? _0xcode : _0xcode-26);
+// Metode Netcyzen: AES-256, RSA-4096, dan Quantum Cryptography
+(async function () {
+    // ===========================================================
+    // Bagian 1: AES-256 Encryption & Decryption
+    // ===========================================================
+    async function generateAESKey() {
+        return await crypto.subtle.generateKey(
+            { name: "AES-GCM", length: 256 },
+            true,
+            ["encrypt", "decrypt"]
+        );
+    }
+
+    async function encryptAES(key, text) {
+        let encoder = new TextEncoder();
+        let data = encoder.encode(text);
+        let iv = crypto.getRandomValues(new Uint8Array(12)); // Initialization Vector (IV)
+        let encrypted = await crypto.subtle.encrypt(
+            { name: "AES-GCM", iv },
+            key,
+            data
+        );
+        return { encrypted: btoa(String.fromCharCode(...new Uint8Array(encrypted))), iv: btoa(String.fromCharCode(...iv)) };
+    }
+
+    async function decryptAES(key, encrypted, iv) {
+        let decoder = new TextDecoder();
+        let encryptedBytes = new Uint8Array(atob(encrypted).split('').map(c => c.charCodeAt(0)));
+        let ivBytes = new Uint8Array(atob(iv).split('').map(c => c.charCodeAt(0)));
+        let decrypted = await crypto.subtle.decrypt(
+            { name: "AES-GCM", iv: ivBytes },
+            key,
+            encryptedBytes
+        );
+        return decoder.decode(decrypted);
+    }
+
+    // ===========================================================
+    // Bagian 2: RSA-4096 Encryption & Decryption
+    // ===========================================================
+    async function generateRSAKeys() {
+        return await crypto.subtle.generateKey(
+            {
+                name: "RSA-OAEP",
+                modulusLength: 4096,
+                publicExponent: new Uint8Array([1, 0, 1]),
+                hash: "SHA-256"
+            },
+            true,
+            ["encrypt", "decrypt"]
+        );
+    }
+
+    async function encryptRSA(publicKey, text) {
+        let encoder = new TextEncoder();
+        let data = encoder.encode(text);
+        let encrypted = await crypto.subtle.encrypt(
+            { name: "RSA-OAEP" },
+            publicKey,
+            data
+        );
+        return btoa(String.fromCharCode(...new Uint8Array(encrypted)));
+    }
+
+    async function decryptRSA(privateKey, encrypted) {
+        let decoder = new TextDecoder();
+        let encryptedBytes = new Uint8Array(atob(encrypted).split('').map(c => c.charCodeAt(0)));
+        let decrypted = await crypto.subtle.decrypt(
+            { name: "RSA-OAEP" },
+            privateKey,
+            encryptedBytes
+        );
+        return decoder.decode(decrypted);
+    }
+
+    // ===========================================================
+    // Bagian 3: Quantum Cryptography Placeholder
+    // ===========================================================
+    function quantumEncrypt(text) {
+        // Quantum encryption is experimental and beyond browser capabilities
+        return btoa(text); // Placeholder for quantum-safe encryption
+    }
+
+    function quantumDecrypt(encrypted) {
+        return atob(encrypted); // Placeholder for quantum-safe decryption
+    }
+
+    // ===========================================================
+    // Bagian 4: Event Listener
+    // ===========================================================
+    document.getElementById("encryptButton").addEventListener("click", async function () {
+        let inputText = document.getElementById("inputText").value;
+        let aesKey = await generateAESKey();
+        let rsaKeys = await generateRSAKeys();
+
+        let aesEncrypted = await encryptAES(aesKey, inputText);
+        let rsaEncrypted = await encryptRSA(rsaKeys.publicKey, inputText);
+        let quantumEncrypted = quantumEncrypt(inputText);
+
+        document.getElementById("outputAES").textContent = `AES: ${aesEncrypted.encrypted}\nIV: ${aesEncrypted.iv}`;
+        document.getElementById("outputRSA").textContent = `RSA: ${rsaEncrypted}`;
+        document.getElementById("outputQuantum").textContent = `Quantum: ${quantumEncrypted}`;
     });
-  }
-  
-  function encodeHex(str){
-    var _0xsplit = ["s","p","l","i","t"].join("");
-    var _0xmap   = ["m","a","p"].join("");
-    var _0xjoin  = ["j","o","i","n"].join("");
-    return str[_0xsplit]("")[_0xmap](function(ch){
-      return ch.charCodeAt(0).toString(16).padStart(2,"0");
-    })[_0xjoin](" ");
-  }
-  
-  function encodeAtbash(str){
-    var _0xalphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-    var _0xreversed = _0xalphabet.split("").reverse().join("");
-    var _0xsplit = ["s","p","l","i","t"].join("");
-    var _0xmap   = ["m","a","p"].join("");
-    var _0xjoin  = ["j","o","i","n"].join("");
-    return str[_0xsplit]("")[_0xmap](function(ch){
-      var _0xupper = ch.toUpperCase();
-      var _0xidx = _0xalphabet.indexOf(_0xupper);
-      if(_0xidx!==-1){
-        var _0xnew = _0xreversed[_0xidx];
-        return ch===ch.toUpperCase() ? _0xnew : _0xnew.toLowerCase();
-      }
-      return ch;
-    })[_0xjoin]("");
-  }
-  
-  function encodeBase85(str){
-    var bytes = [];
-    for(var i=0; i<str.length; i++){
-      bytes.push(str.charCodeAt(i));
-    }
-    var padding = (4 - (bytes.length % 4)) % 4;
-    for(var i=0; i<padding; i++){
-      bytes.push(0);
-    }
-    var result = "";
-    for(var i=0; i<bytes.length; i+=4){
-      var num = ((bytes[i] << 24) >>> 0) | (bytes[i+1] << 16) | (bytes[i+2] << 8) | (bytes[i+3]);
-      if(num===0){
-        result += "z";
-      } else {
-        var block = "";
-        var divisor = Math.pow(85,4);
-        for(var j=0; j<5; j++){
-          var digit = Math.floor(num/divisor) % 85;
-          block += String.fromCharCode(digit+33);
-          divisor /= 85;
-        }
-        result += block;
-      }
-    }
-    return result;
-  }
-  
-  function encodeBase91(str){
-    var b = 0, n = 0, out = "";
-    var alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!#$%&()*+,./:;<=>?@[]^_`{|}~\"";
-    for(var i=0; i<str.length; i++){
-      b |= str.charCodeAt(i) << n;
-      n += 8;
-      if(n > 13){
-        var v = b & 8191;
-        if(v > 88){ b >>= 13; n -= 13; }
-        else { v = b & 16383; b >>= 14; n -= 14; }
-        out += alphabet[v % 91] + alphabet[Math.floor(v/91)];
-      }
-    }
-    if(n){
-      out += alphabet[b % 91];
-      if(n > 7 || b > 90){ out += alphabet[Math.floor(b/91)]; }
-    }
-    return out;
-  }
-  
-  function encodeJSObfuscate(str){
-    var _0xkey = ["b","t","o","a"].join("");
-    return window[_0xkey](str.split("").reverse().join(""));
-  }
-  
-  function encodePunycode(str){
-    return "xn--" + encodeHex(str);
-  }
-  
-  function encodeBrainfuck(str){
-    var bf = "";
-    for(var i=0; i<str.length; i++){
-      var code = str.charCodeAt(i);
-      bf += "+".repeat(code) + ".";
-    }
-    return bf;
-  }
-  
-  function encodeBase4096(str){
-    var bits = "";
-    for(var i=0; i<str.length; i++){
-      bits += str.charCodeAt(i).toString(2).padStart(8,"0");
-    }
-    var pad = (12 - (bits.length % 12)) % 12;
-    bits = bits.padEnd(bits.length+pad,"0");
-    var res = "";
-    for(var i=0; i<bits.length; i+=12){
-      var chunk = bits.substr(i,12);
-      var num = parseInt(chunk,2);
-      res += String.fromCharCode(num + 0x1000);
-    }
-    return res;
-  }
-  
-  function encodeDNA(str){
-    var mapping = {"00":"A","01":"C","10":"G","11":"T"};
-    var res = "";
-    for(var i=0; i<str.length; i++){
-      var bin = str.charCodeAt(i).toString(2).padStart(8,"0");
-      for(var j=0; j<8; j+=2){
-        var pair = bin.substr(j,2);
-        res += mapping[pair];
-      }
-    }
-    return res;
-  }
-  
-  // ===========================================================
-  // Bagian 3: Penggabungan Hasil Secara Ringkas
-  // ===========================================================
-  
-  function processEncodings(input){
-    var results = [];
-    try { results.push(encodeBase64(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeCharCodes(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeURL(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeMorse(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeBinary(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeRot13(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeHex(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeAtbash(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeBase85(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeBase91(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeJSObfuscate(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodePunycode(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeBrainfuck(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeBase4096(input)); } catch(e){ results.push("Err:" + e.message); }
-    try { results.push(encodeDNA(input)); } catch(e){ results.push("Err:" + e.message); }
-    return results;
-  }
-  
-  function combineEncodings(results){
-    var take = 4;
-    return results.map(function(r){ return r.substr(0, take); }).join("");
-  }
-  
-  // ===========================================================
-  // Bagian 4: Advanced Combine dengan Teknik String Array yang Sulit
-  // ===========================================================
-  function advancedCombineEncodings(results){
-    var basic = combineEncodings(results);
-    var chars = basic.split("");
-    for(var i = chars.length - 1; i > 0; i--){
-      var j = Math.floor(Math.random()*(i+1));
-      var tmp = chars[i];
-      chars[i] = chars[j];
-      chars[j] = tmp;
-    }
-    var obfus = chars.map(function(ch){
-      var hx = ch.charCodeAt(0).toString(16);
-      var rev = hx.split("").reverse().join("");
-      var rand = ["x","y","z"][Math.floor(Math.random()*3)];
-      return rev + rand;
-    });
-    var delims = ["\x7C","\x2A","\x23"]; // |, *, #
-    for(var i = delims.length - 1; i > 0; i--){
-      var j = Math.floor(Math.random()*(i+1));
-      var tmp = delims[i];
-      delims[i] = delims[j];
-      delims[j] = tmp;
-    }
-    var delim = delims.join("");
-    return obfus.join(delim);
-  }
-  
-  // ===========================================================
-  // Bagian 5: Event Listener dan Fungsi Clipboard
-  // ===========================================================
-  document.getElementById("encodeButton").addEventListener("click", function(){
-    try{
-      var inp = document.getElementById("inputText").value;
-      var res = processEncodings(inp);
-      var out = advancedCombineEncodings(res);
-      document.getElementById("outputText").textContent = out;
-    } catch(e){
-      document.getElementById("outputText").textContent = "Err processing: " + e.message;
-      console.error(e);
-    }
-  });
-  
-  document.getElementById("pasteButton").addEventListener("click", async function(){
-    try{
-      if(navigator.clipboard && navigator.clipboard.readText){
-        var txt = await navigator.clipboard.readText();
-        document.getElementById("inputText").value = txt;
-      } else { alert("Clipboard API not supported."); }
-    } catch(e){ alert("Paste err: " + e.message); }
-  });
-  
-  document.getElementById("copyButton").addEventListener("click", async function(){
-    try{
-      var outTxt = document.getElementById("outputText").textContent;
-      if(navigator.clipboard && navigator.clipboard.writeText){
-        await navigator.clipboard.writeText(outTxt);
-        alert("Copied to clipboard!");
-      } else {
-        var temp = document.createElement("textarea");
-        temp.value = outTxt;
-        document.body.appendChild(temp);
-        temp.select();
-        if(document.execCommand("copy")){
-          alert("Copied!");
-        } else { alert("Copy failed."); }
-        document.body.removeChild(temp);
-      }
-    } catch(e){ alert("Copy err: " + e.message); }
-  });
 })();
