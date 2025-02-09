@@ -1,6 +1,6 @@
 (function() {
   // ===========================================================
-  // Bagian 1: Array Label Obfuscated dengan Notasi Hex dan Shifting (Internal)
+  // Bagian 1: Array Label Obfuscated (Internal saja)
   // ===========================================================
   const _0xlabels = [
     "\x42\x61\x73\x65\x36\x34",              // "Base64"
@@ -20,7 +20,7 @@
     "\x44\x4e\x41"                           // "DNA"
   ];
   
-  // Fungsi shifting untuk mengacak urutan array label (internal saja)
+  // Fungsi shifting untuk mengacak urutan array label (hanya internal)
   (function(_0xarr, _0xshift) {
     const _0xinner = function(_0xnum) {
       while (--_0xnum) {
@@ -28,9 +28,9 @@
       }
     };
     _0xinner(++_0xshift);
-  }(_0xlabels, 0x3));  // Misalnya, geser sebanyak 4 kali
+  }(_0xlabels, 0x3));  // Contoh: geser sebanyak 4 kali
   
-  // Fungsi untuk mengambil label (jika diperlukan secara internal)
+  // Fungsi _0xgetLabel() tersedia jika diperlukan internal (tidak dipakai di output)
   function _0xgetLabel(_0xindex) {
     _0xindex = _0xindex - 0x0;
     return _0xlabels[_0xindex];
@@ -45,7 +45,7 @@
       return btoa(str);
   }
 
-  // 2. Character Encoding: mengubah setiap karakter menjadi nilai kode (char code)
+  // 2. Character Encoding (CharCodes)
   function encodeCharCodes(str) {
       return str.split('').map(ch => ch.charCodeAt(0)).join(' ');
   }
@@ -75,7 +75,7 @@
       }).join(' ');
   }
 
-  // 5. Binary Encoding: setiap karakter diubah ke representasi biner 8-bit
+  // 5. Binary Encoding
   function encodeBinary(str) {
       return str.split('').map(ch => {
           return ch.charCodeAt(0).toString(2).padStart(8, '0');
@@ -98,7 +98,7 @@
       }).join(' ');
   }
 
-  // 8. Cipher Encoding dengan Atbash
+  // 8. Atbash Cipher Encoding
   function encodeAtbash(str) {
       const alphabet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
       const reversed = alphabet.split('').reverse().join('');
@@ -171,7 +171,7 @@
       return out;
   }
 
-  // 11. JS Obfuscation: membalik string lalu Base64
+  // 11. JS Obfuscation (balik string lalu Base64)
   function encodeJSObfuscate(str) {
       return btoa(str.split("").reverse().join(""));
   }
@@ -182,7 +182,7 @@
   }
 
   // 13. Brainfuck Encoding  
-  // (Untuk tiap karakter, tambahkan '+' sebanyak nilai ASCII, kemudian '.')
+  // Untuk tiap karakter: tambahkan '+' sebanyak nilai ASCII, lalu '.'
   function encodeBrainfuck(str) {
       let bf = "";
       for (let i = 0; i < str.length; i++) {
@@ -193,7 +193,7 @@
   }
 
   // 14. Base4096 Encoding  
-  // (Mengelompokkan bit tiap karakter ke dalam blok 12-bit, lalu memetakan ke Unicode)
+  // Kelompokkan bit tiap karakter ke dalam blok 12-bit, lalu petakan ke Unicode
   function encodeBase4096(str) {
       let bits = "";
       for (let i = 0; i < str.length; i++) {
@@ -211,7 +211,7 @@
   }
 
   // 15. DNA Encoding  
-  // (Setiap 2-bit dikonversi ke nukleotida: "00" → A, "01" → C, "10" → G, "11" → T)
+  // Setiap 2-bit dikonversi ke nukleotida: "00"→A, "01"→C, "10"→G, "11"→T
   function encodeDNA(str) {
       let mapping = {"00": "A", "01": "C", "10": "G", "11": "T"};
       let result = "";
@@ -226,7 +226,7 @@
   }
 
   // ===========================================================
-  // Bagian 3: Proses Penggabungan Hasil (Menginterlace Semua Output)
+  // Bagian 3: Proses Penggabungan Hasil (Menyatukan Output Secara Ringkas)
   // ===========================================================
   
   // Fungsi untuk memproses semua encoding dan mengembalikan array hasil
@@ -251,19 +251,13 @@
       return results;
   }
 
-  // Fungsi untuk menggabungkan (menginterlace) hasil-hasil encoding menjadi satu string tunggal.
-  // Pendekatan: Ambil satu karakter dari masing-masing hasil secara bergiliran hingga semua habis.
+  // Fungsi untuk menggabungkan hasil-hasil encoding secara ringkas.
+  // Di sini, kita ambil hanya (misalnya) 4 karakter dari tiap hasil.
   function combineEncodings(results) {
-      let finalOutput = "";
-      let maxLen = Math.max(...results.map(r => r.length));
-      for (let i = 0; i < maxLen; i++) {
-          for (let j = 0; j < results.length; j++) {
-              if (i < results[j].length) {
-                  finalOutput += results[j].charAt(i);
-              }
-          }
-      }
-      return finalOutput;
+      const takeChars = 4; // jumlah karakter yang akan diambil dari tiap metode
+      return results
+        .map(r => r.substr(0, takeChars))
+        .join("");
   }
 
   // ===========================================================
