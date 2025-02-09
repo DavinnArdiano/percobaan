@@ -360,3 +360,4 @@ document.addEventListener("DOMContentLoaded", function() {
     } catch(e){ alert("Copy err: " + e.message); }
   });
 })();
+}
