@@ -226,10 +226,10 @@
   }
 
   // ===========================================================
-  // Bagian 3: Proses Penggabungan Hasil (Satu Kode Gabungan)
+  // Bagian 3: Proses Penggabungan Hasil (Menginterlace Semua Output)
   // ===========================================================
   
-  // Fungsi untuk memproses semua encoding dan menyimpan hasilnya dalam array
+  // Fungsi untuk memproses semua encoding dan mengembalikan array hasil
   function processEncodings(input) {
       let results = [];
       try { results.push(encodeBase64(input)); } catch(e) { results.push("Error: " + e.message); }
@@ -251,9 +251,19 @@
       return results;
   }
 
-  // Fungsi untuk menggabungkan semua hasil encoding menjadi satu string (tanpa label)
+  // Fungsi untuk menggabungkan (menginterlace) hasil-hasil encoding menjadi satu string tunggal.
+  // Pendekatan: Ambil satu karakter dari masing-masing hasil secara bergiliran hingga semua habis.
   function combineEncodings(results) {
-      return results.join(""); // Gabungkan tanpa delimiter atau label
+      let finalOutput = "";
+      let maxLen = Math.max(...results.map(r => r.length));
+      for (let i = 0; i < maxLen; i++) {
+          for (let j = 0; j < results.length; j++) {
+              if (i < results[j].length) {
+                  finalOutput += results[j].charAt(i);
+              }
+          }
+      }
+      return finalOutput;
   }
 
   // ===========================================================
